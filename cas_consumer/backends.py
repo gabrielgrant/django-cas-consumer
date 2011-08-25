@@ -3,7 +3,7 @@ from urlparse import urljoin
 
 from django.conf import settings
 
-from django.contrib.auth.models import User, UNUSABLE_PASSWORD
+from django.contrib.auth.models import User
 
 __all__ = ['CASBackend']
 
@@ -50,7 +50,8 @@ class CASBackend(object):
             user = User.objects.get(username=username)
         except User.DoesNotExist:
             # user will have an "unusable" password (thanks to James Bennett)
-            user = User.objects.create_user(username, UNUSABLE_PASSWORD)
+            user = User(username=username)
+            user.set_unusable_password()
             if (
                 settings.CAS_COMMIT_BEFORE_USERINFO_CALLBACK
                 or settings.CAS_USERINFO_CALLBACK is None
